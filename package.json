@@ -1,0 +1,22 @@
+{
+  "name": "phew",
+  "version": "1.0.0",
+  "description": "Weekend activity finder for parents — SMS-based, AI-powered, freemium",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "airtable": "^0.12.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-cron": "^3.0.3",
+    "stripe": "^17.5.0",
+    "twilio": "^5.4.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
