@@ -1,25 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const twilio = require('twilio');
 const { handleIncoming } = require('./conversation');
 
 router.post('/incoming', async (req, res) => {
-  // Twilio signature validation (disabled for now due to proxy URL mismatch)
-  // TODO: Re-enable once URL matching is confirmed
-  // if (process.env.NODE_ENV === 'production') {
-  //   const twilioSignature = req.headers['x-twilio-signature'];
-  //   const url = \`\${process.env.BASE_URL}/sms/incoming\`;
-  //   const isValid = twilio.validateRequest(
-  //     process.env.TWILIO_AUTH_TOKEN,
-  //     twilioSignature,
-  //     url,
-  //     req.body
-  //   );
-  //   if (!isValid) {
-  //     console.warn('Invalid Twilio signature — rejecting request');
-  //     return res.status(403).send('Forbidden');
-  //   }
-  // }
+  // TODO: Re-enable Twilio signature validation once URL matching is confirmed
+  // Signature validation is disabled because Render's reverse proxy
+  // causes URL mismatch in Twilio's signature computation
 
   // Acknowledge Twilio immediately (empty TwiML — we send replies via API)
   res.set('Content-Type', 'text/xml');
