@@ -187,7 +187,9 @@ app.get('/terms', (req, res) => {
 
 // ── Cron Jobs ────────────────────────────────────────────────────────────────
 const { startThursdayCron } = require('./cron/thursday');
+const { startMondayCron } = require('./cron/monday');
 startThursdayCron();
+startMondayCron();
 
 // ── Start ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;

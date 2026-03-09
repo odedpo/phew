@@ -21,7 +21,7 @@ function startThursdayCron() {
           await sendSMS(user.Phone, message);
           sent++;
           // Delay between messages to avoid Twilio rate limits
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(r => setTimeout(r, 1500));
         } catch (err) {
           failed++;
           console.error(`[Thursday Cron] Failed for ${user.Phone}:`, err.message);

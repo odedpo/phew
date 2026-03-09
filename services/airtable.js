@@ -26,6 +26,10 @@ async function createUser(phone) {
     SubscriptionStatus: 'free',
     PastActivities: '[]',
     Kids: '[]',
+    ConversationHistory: '[]',
+    ActivityFeedback: '[]',
+    LearningNotes: '',
+    LastActiveDate: new Date().toISOString(),
     CreatedAt: new Date().toISOString()
   });
   return { id: record.id, ...record.fields };
@@ -43,10 +47,18 @@ async function getAllSubscribed() {
   return records.map(r => ({ id: r.id, ...r.fields }));
 }
 
+async function getAllActive() {
+  // All users who have completed onboarding (ACTIVE or AWAITING_PAYMENT)
+  const records = await base(TABLE).select({
+    filterByFormula: `OR({State} = 'ACTIVE', {State} = 'AWAITING_PAYMENT')`
+  }).all();
+  return records.map(r => ({ id: r.id, ...r.fields }));
+}
+
 async function getOrCreateUser(phone) {
   let user = await getUser(phone);
   if (!user) user = await createUser(phone);
   return user;
 }
 
-module.exports = { getUser, createUser, updateUser, getAllSubscribed, getOrCreateUser };
+module.exports = { getUser, createUser, updateUser, getAllSubscribed, getAllActive, getOrCreateUser };
