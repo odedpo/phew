@@ -4,8 +4,8 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MODEL = 'claude-sonnet-4-20250514';
 
 async function getRecommendations(user, userMessage) {
-  const kids = JSON.parse(user.kids || '[]');
-  const pastActivities = JSON.parse(user.past_activities || '[]');
+  const kids = JSON.parse(user.Kids || '[]');
+  const pastActivities = JSON.parse(user.PastActivities || '[]');
   const kidsDesc = kids.length
     ? kids.map(k => k.name ? `${k.name} (${k.age})` : `age ${k.age}`).join(', ')
     : 'kids';
@@ -14,9 +14,9 @@ async function getRecommendations(user, userMessage) {
 You give hyper-local, practical, fun activity recommendations for families.
 
 User profile:
-- Zipcode: ${user.zipcode}
+- Zipcode: ${user.Zipcode}
 - Kids: ${kidsDesc}
-- Preferences: ${user.preferences || 'none specified'}
+- Preferences: ${user.Preferences || 'none specified'}
 - Past activities (avoid repeating): ${pastActivities.slice(-10).join(', ') || 'none yet'}
 
 Rules:
@@ -24,7 +24,7 @@ Rules:
 - Each recommendation: activity name, why it fits their kids, area/neighborhood, rough cost
 - Keep it conversational, warm, like a friend texting back
 - Be specific to their zipcode area — real places, real suggestions
-- Use web knowledge of the area around zipcode ${user.zipcode}
+- Use web knowledge of the area around zipcode ${user.Zipcode}
 - End with "Reply with a number to get more details, or just tell me what you're in the mood for!"
 - Keep total response under 1400 characters (SMS-friendly)
 - Max 1-2 emojis per message`;
@@ -44,7 +44,7 @@ Rules:
 }
 
 async function getProactiveMessage(user) {
-  const kids = JSON.parse(user.kids || '[]');
+  const kids = JSON.parse(user.Kids || '[]');
   const kidsDesc = kids.length
     ? kids.map(k => k.name || `your ${k.age}-year-old`).join(' and ')
     : 'the kids';
@@ -56,7 +56,7 @@ async function getProactiveMessage(user) {
       messages: [{
         role: 'user',
         content: `Write a short, warm Thursday SMS from Phew (weekend activity app) to a parent.
-Their kids: ${kidsDesc}. Zipcode: ${user.zipcode}.
+Their kids: ${kidsDesc}. Zipcode: ${user.Zipcode}.
 Ask if they want weekend activity ideas. Max 2 sentences. Casual, friendly. Max 1 emoji.`
       }]
     });
@@ -68,7 +68,7 @@ Ask if they want weekend activity ideas. Max 2 sentences. Casual, friendly. Max 
 }
 
 async function getActivityDetails(user, activityName) {
-  const kids = JSON.parse(user.kids || '[]');
+  const kids = JSON.parse(user.Kids || '[]');
   const kidsDesc = kids.length
     ? kids.map(k => k.name ? `${k.name} (${k.age})` : `age ${k.age}`).join(', ')
     : 'kids';
@@ -79,7 +79,7 @@ async function getActivityDetails(user, activityName) {
       max_tokens: 400,
       messages: [{
         role: 'user',
-        content: `Give details about "${activityName}" near zipcode ${user.zipcode} for kids: ${kidsDesc}.
+        content: `Give details about "${activityName}" near zipcode ${user.Zipcode} for kids: ${kidsDesc}.
 Include: exact address if known, hours, parking tips, what to bring, age-appropriateness.
 Keep it SMS-friendly, conversational, under 5 sentences.`
       }]

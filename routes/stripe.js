@@ -43,6 +43,25 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     const subscription = event.data.object;
     const customerId = subscription.customer;
     console.log(`Subscription cancelled for Stripe customer: ${customerId}`);
+
+    // Find user by StripeCustomerId and downgrade them
+    try {
+      const Airtable = require('airtable');
+      const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
+      const records = await base('Users').select({
+        filterByFormula: `{StripeCustomerId} = '${customerId}'`,
+        maxRecords: 1
+      }).firstPage();
+
+      if (records.length) {
+        await updateUser(records[0].id, { SubscriptionStatus: 'cancelled' });
+        await sendSMS(records[0].fields.Phone,
+          "Your Phew subscription has been cancelled. You can still text me anytime — just reply 'subscribe' if you want to come back!"
+        );
+      }
+    } catch (err) {
+      console.error('Error handling subscription cancellation:', err.message);
+    }
   }
 
   res.json({ received: true });
